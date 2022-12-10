@@ -15,6 +15,11 @@ tail_movement = {
     (2, -1): (1, -1),
     (-1, -2): (-1, -1),
     (-2, -1): (-1, -1),
+    # additional diagonal positions
+    (2, 2): (1, 1),
+    (-2, 2): (-1, 1),
+    (2, -2): (1, -1),
+    (-2, -2): (-1, -1),
 }
 # dictionary for parsing the head movement
 head_movement = {
@@ -24,13 +29,17 @@ head_movement = {
     'D': (0, -1),
 }
 
-def movement(direction, head_position, follower_position):
-    # takes a direction for a head and follower position and returns the new head and follower positions
+def movement(direction, head_position):
+    # takes a direction for a head  position and returns the new head position
     head_position = (head_position[0] + head_movement[direction][0], head_position[1] + head_movement[direction][1])
+    return head_position
+
+def update(head_position, follower_position):
+    # takes a head and follower position and updates the follower positions
     position_difference = (head_position[0] - follower_position[0], head_position[1] - follower_position[1])
     if position_difference in tail_movement:
         follower_position = (follower_position[0] + tail_movement[position_difference][0], follower_position[1] + tail_movement[position_difference][1])
-    
+
     return head_position, follower_position
 
 def solution1(inputarray):
@@ -43,20 +52,32 @@ def solution1(inputarray):
         direction, distance = instruction.split()
         distance = int(distance)
         for i in range(distance):
-            head = (head[0] + head_movement[direction][0], head[1] + head_movement[direction][1])
-            position_difference = (head[0] - tails[0], head[1] - tails[1])
-            if position_difference in tail_movement:
-                tails = (tails[0] + tail_movement[position_difference][0], tails[1] + tail_movement[position_difference][1])
-                tail_positions.add(tails)
-    
+            head = movement(direction, head)
+            head, tails = update(head, tails)
+            tail_positions.add(tails)
+
     return len(tail_positions)
 
 def solution2(inputarray):
-    pass
-            
+    knots_length = 10
+    knots = [(0, 0) for i in range(knots_length)]
+
+    tail_positions = set([knots[-1]])
+
+    for instruction in inputarray:
+        direction, distance = instruction.split()
+        distance = int(distance)
+        for i in range(distance):
+            knots[0] = movement(direction, knots[0])
+            for j in range(knots_length - 1):
+                knots[j], knots[j + 1] = update(knots[j], knots[j + 1])
+
+            tail_positions.add(knots[-1])
+    return len(tail_positions)
+
 if __name__ == '__main__':
     f = open('input.txt', 'r')
-    
-    inputarray = f.read().splitlines() 
+
+    inputarray = f.read().splitlines()
     print(solution1(inputarray))
     print(solution2(inputarray))
