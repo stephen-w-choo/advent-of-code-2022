@@ -1,8 +1,5 @@
-# from collections import deque 
 from functools import cmp_to_key
 import json
-# dictionary that takes the difference in position between the head and the tail
-# and returns the movement of the tail
 
 def compare_lists(a, b):
     # takes two lists and compares the individual elements
