@@ -20,11 +20,12 @@ def compare_lists(a, b):
                 a_element = [a[i]]
             if type(b[i]) == int:
                 b_element = [b[i]]
-            if compare_lists(a_element, b_element) < 0:
+            comparison = compare_lists(a_element, b_element)
+            if comparison < 0:
                 return -1
-            if compare_lists(a_element, b_element) > 0:
+            if comparison > 0:
                 return 1
-            if compare_lists(a_element, b_element) == 0:
+            if comparison == 0:
                 continue
     
     # if lists are exhausted, compare the list lengths
